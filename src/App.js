@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import './App.css';
 import SingleCard from './components/SingleCard';
 
@@ -18,6 +18,7 @@ function App() {
 
   const [ChoiceOne, setChoiceOne] = useState(null)
   const [ChoiceTwo, setChoiceTwo] = useState(null)
+  const myRef = useRef(null)
 
   // losowanie kart
   const shuffleCards = () => {
@@ -27,7 +28,12 @@ function App() {
 
     setCards(shuffledCards)
     setTurns(0)
+    setTimeout(() => {
+      executeScroll()
+    }, 1000);
   }
+
+  const executeScroll = () => myRef.current.scrollIntoView()
 
   // handle choice
   const handleChoice = (card) => {
@@ -35,6 +41,11 @@ function App() {
     // kurwa sprytne, rokmin to
     ChoiceOne ? setChoiceTwo(card) : setChoiceOne(card)
   }
+
+  //useEffect(() => {
+  //  shuffleCards()//first execution
+  //},[]);
+ 
 
   //compare 2 selections
   useEffect(() => {
@@ -73,9 +84,15 @@ function App() {
   return (
     <div className="App">
       <h1>Gra: Debile</h1>
-      <button onClick={shuffleCards} className="bubbly-button">Nowa gra</button>
+      <button
+        onClick={() => {
+          shuffleCards();
+        }}
+        className="bubbly-button">
+          Nowa gra
+      </button>
 
-      <div className="card-grid">
+      <div ref={myRef} className="card-grid">
         {Cards.map(card => (
           <SingleCard
             key={card.id}
